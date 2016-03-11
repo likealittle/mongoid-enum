@@ -8,10 +8,17 @@ module Mongoid
       def enum(name, values, options = {})
         field_name = :"_#{name}"
         const_name = name.to_s.upcase
-        multiple = options[:multiple] || false
-        default = options[:default].nil? && values.first || options[:default]
-        required = options[:required].nil? || options[:required]
-        validate = options[:validate].nil? || options[:validate]
+        values = values.map(&:to_sym)
+        options = {
+          multiple: false,
+          default: values.first,
+          required: true,
+          validate: true
+        }.merge(options)
+        multiple = options[:multiple]
+        default = options[:default]
+        required = options[:required]
+        validate = options[:validate]
 
         const_set const_name, values
 
